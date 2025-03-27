@@ -48,12 +48,12 @@ const getBrowserLanguage = () => {
 };
 
 // 获取当前语言
-const getCurrentLanguage = () => {
+export const getCurrentLanguage = () => {
     return localStorage.getItem('language') || getBrowserLanguage();
 };
 
 // 设置语言
-const setLanguage = (lang) => {
+export const setLanguage = (lang) => {
     if (translations[lang]) {
         localStorage.setItem('language', lang);
         updatePageTranslations();
@@ -61,7 +61,7 @@ const setLanguage = (lang) => {
 };
 
 // 更新页面翻译
-const updatePageTranslations = () => {
+export const updatePageTranslations = () => {
     const lang = getCurrentLanguage();
     const t = translations[lang];
     
@@ -75,11 +75,4 @@ const updatePageTranslations = () => {
             element.textContent = t[key];
         }
     });
-};
-
-// 导出需要的函数
-export {
-    getCurrentLanguage,
-    setLanguage,
-    updatePageTranslations
 }; 
