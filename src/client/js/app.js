@@ -156,27 +156,35 @@ async function checkDownloadAvailability() {
     }
 }
 
-// 更新下载按钮状态和文本
-function updateDownloadButton(button, state, error = null) {
+// 检查按钮结构是否完整
+function validateButtonStructure(button) {
     if (!button) {
         console.error('Button element is missing');
+        return false;
+    }
+    const buttonContent = button.querySelector('.button-content');
+    if (!buttonContent) {
+        console.error('Button content element is missing');
+        return false;
+    }
+    const span = buttonContent.querySelector('span');
+    const spinner = buttonContent.querySelector('.loading-spinner');
+    if (!span || !spinner) {
+        console.error('Button child elements are missing');
+        return false;
+    }
+    return true;
+}
+
+// 更新下载按钮状态和文本
+function updateDownloadButton(button, state, error = null) {
+    if (!validateButtonStructure(button)) {
         return;
     }
 
     const buttonContent = button.querySelector('.button-content');
-    if (!buttonContent) {
-        console.error('Button content element is missing');
-        return;
-    }
-
     const span = buttonContent.querySelector('span');
     const spinner = buttonContent.querySelector('.loading-spinner');
-
-    if (!span || !spinner) {
-        console.error('Required button elements are missing');
-        return;
-    }
-
     const originalText = i18n.t(button.getAttribute('data-i18n'));
     
     switch (state) {
@@ -337,24 +345,24 @@ function initializeElements() {
 // 初始化按钮状态
 function initializeButtons() {
     const buttons = [elements.downloadJson, elements.downloadPackage];
+    let allValid = true;
+    
     buttons.forEach(button => {
-        if (!button) {
-            console.error('Button element not found during initialization');
+        if (!validateButtonStructure(button)) {
+            allValid = false;
             return;
         }
-        const buttonContent = button.querySelector('.button-content');
-        if (!buttonContent) {
-            console.error('Button content element not found during initialization');
-            return;
-        }
-        const span = buttonContent.querySelector('span');
-        const spinner = buttonContent.querySelector('.loading-spinner');
-        if (!span || !spinner) {
-            console.error('Button child elements not found during initialization');
-            return;
-        }
+    });
+
+    if (!allValid) {
+        throw new Error('Button initialization failed: invalid button structure');
+    }
+
+    buttons.forEach(button => {
         updateDownloadButton(button, 'normal');
     });
+
+    return allValid;
 }
 
 // 初始化应用
@@ -387,7 +395,9 @@ async function initializeApp() {
         await new Promise(resolve => requestAnimationFrame(resolve));
         
         // 初始化按钮状态
-        initializeButtons();
+        if (!initializeButtons()) {
+            throw new Error('Button initialization failed');
+        }
         
         // 绑定按钮事件
         elements.downloadJson.addEventListener('click', downloadJson);
@@ -408,5 +418,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // 等待国际化初始化完成后再初始化应用
     setTimeout(() => {
         initializeApp();
-    }, 0);
+    }, 100); // 增加延迟时间，确保 DOM 完全准备好
 }); 
