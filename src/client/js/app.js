@@ -338,25 +338,75 @@ function initializeElements() {
 function initializeButtons() {
     const buttons = [elements.downloadJson, elements.downloadPackage];
     buttons.forEach(button => {
+        if (!button) {
+            console.error('Button element not found during initialization');
+            return;
+        }
+        const buttonContent = button.querySelector('.button-content');
+        if (!buttonContent) {
+            console.error('Button content element not found during initialization');
+            return;
+        }
+        const span = buttonContent.querySelector('span');
+        const spinner = buttonContent.querySelector('.loading-spinner');
+        if (!span || !spinner) {
+            console.error('Button child elements not found during initialization');
+            return;
+        }
         updateDownloadButton(button, 'normal');
     });
 }
 
+// 初始化应用
+async function initializeApp() {
+    try {
+        // 初始化 DOM 元素
+        initializeElements();
+        
+        // 验证必要的元素是否存在
+        const requiredElements = [
+            'downloadJson',
+            'downloadPackage',
+            'totalGames',
+            'lastUpdate',
+            'collectStatus',
+            'lastStart',
+            'lastEnd',
+            'lastError',
+            'progressContainer',
+            'progressBar',
+            'progressText'
+        ];
+
+        const missingElements = requiredElements.filter(id => !elements[id]);
+        if (missingElements.length > 0) {
+            throw new Error(`Missing required elements: ${missingElements.join(', ')}`);
+        }
+
+        // 等待一个渲染帧，确保 DOM 完全更新
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
+        // 初始化按钮状态
+        initializeButtons();
+        
+        // 绑定按钮事件
+        elements.downloadJson.addEventListener('click', downloadJson);
+        elements.downloadPackage.addEventListener('click', downloadPackage);
+
+        // 立即更新一次状态
+        await updateStatusPeriodically();
+
+        // 设置定期更新
+        setInterval(updateStatusPeriodically, STATUS_UPDATE_INTERVAL);
+    } catch (error) {
+        console.error('Application initialization failed:', error);
+    }
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 初始化 DOM 元素
-    initializeElements();
-    
-    // 初始化按钮状态
-    initializeButtons();
-    
-    // 绑定按钮事件
-    elements.downloadJson.addEventListener('click', downloadJson);
-    elements.downloadPackage.addEventListener('click', downloadPackage);
-
-    // 立即更新一次状态
-    updateStatusPeriodically();
-
-    // 设置定期更新
-    setInterval(updateStatusPeriodically, STATUS_UPDATE_INTERVAL);
+    // 等待国际化初始化完成后再初始化应用
+    setTimeout(() => {
+        initializeApp();
+    }, 0);
 }); 
