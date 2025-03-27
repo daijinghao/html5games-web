@@ -13,15 +13,18 @@ const elements = {
     progressText: document.querySelector('.progress-text')
 };
 
+// 导入 i18n 模块
+import i18n from './i18n.js';
+
 // 状态更新间隔（毫秒）
 const STATUS_UPDATE_INTERVAL = 2000;
 
 // 格式化日期时间
 function formatDateTime(dateStr) {
-    if (!dateStr) return '未知';
+    if (!dateStr) return i18n.t('statusUnknown');
     try {
         const date = new Date(dateStr);
-        return date.toLocaleString('zh-CN', {
+        return date.toLocaleString(i18n.getCurrentLanguage(), {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -32,7 +35,7 @@ function formatDateTime(dateStr) {
         });
     } catch (error) {
         console.error('日期格式化失败:', error);
-        return '未知';
+        return i18n.t('statusUnknown');
     }
 }
 
@@ -40,7 +43,7 @@ function formatDateTime(dateStr) {
 function updateProgress(progress) {
     if (!progress) {
         elements.progressBar.style.width = '0%';
-        elements.progressText.textContent = '未在采集';
+        elements.progressText.textContent = i18n.t('statusNotCollecting');
         return;
     }
 
@@ -50,37 +53,37 @@ function updateProgress(progress) {
     switch (progress.stage) {
         case '初始化':
             displayProgress = progress.stageProgress;
-            displayText = '初始化中...';
+            displayText = i18n.t('statusInitializing');
             break;
         case '获取游戏列表':
             displayProgress = progress.stageProgress;
-            displayText = `获取游戏列表 (${Math.floor(progress.stageProgress)}%)`;
+            displayText = `${i18n.t('statusGettingList')} (${Math.floor(progress.stageProgress)}%)`;
             break;
         case '采集游戏数据':
             displayProgress = progress.stageProgress;
-            displayText = `采集游戏数据 ${progress.current}/${progress.total} (${Math.floor(progress.stageProgress)}%)`;
+            displayText = `${i18n.t('statusCollectingData')} ${progress.current}/${progress.total} (${Math.floor(progress.stageProgress)}%)`;
             break;
         case '生成数据包':
             displayProgress = progress.stageProgress;
-            displayText = `生成数据包 (${Math.floor(progress.stageProgress)}%)`;
+            displayText = `${i18n.t('statusGeneratingPackage')} (${Math.floor(progress.stageProgress)}%)`;
             break;
         case '更新数据库':
             displayProgress = progress.stageProgress;
-            displayText = `更新数据库 (${Math.floor(progress.stageProgress)}%)`;
-            elements.collectStatus.textContent = '更新中';
+            displayText = `${i18n.t('statusUpdatingDB')} (${Math.floor(progress.stageProgress)}%)`;
+            elements.collectStatus.textContent = i18n.t('statusUpdating');
             elements.collectStatus.className = 'status updating';
             break;
         case '更新完成':
             displayProgress = 100;
-            displayText = '更新完成';
+            displayText = i18n.t('statusUpdateComplete');
             break;
         case '完成':
             displayProgress = 100;
-            displayText = '采集完成';
+            displayText = i18n.t('statusComplete');
             break;
         case '错误':
             displayProgress = 0;
-            displayText = '采集出错';
+            displayText = i18n.t('statusError');
             break;
         default:
             displayProgress = 0;
@@ -98,16 +101,16 @@ function updateStatus(status) {
 
     // 更新最后更新时间
     elements.lastUpdate.textContent = status.last_collection_end ? 
-        formatDateTime(status.last_collection_end) : '未知';
+        formatDateTime(status.last_collection_end) : i18n.t('statusUnknown');
 
     // 更新采集状态
     if (status.is_collecting) {
-        elements.collectStatus.textContent = '采集中';
+        elements.collectStatus.textContent = i18n.t('statusCollecting');
         elements.collectStatus.className = 'status collecting';
         elements.progressContainer.style.display = 'block';
         disableDownloadButtons(true);
     } else {
-        elements.collectStatus.textContent = '空闲';
+        elements.collectStatus.textContent = i18n.t('statusIdle');
         elements.collectStatus.className = 'status idle';
         elements.progressContainer.style.display = 'none';
         
@@ -117,10 +120,10 @@ function updateStatus(status) {
 
     // 更新系统信息
     elements.lastStart.textContent = status.last_collection_start ? 
-        formatDateTime(status.last_collection_start) : '未知';
+        formatDateTime(status.last_collection_start) : i18n.t('statusUnknown');
     elements.lastEnd.textContent = status.last_collection_end ? 
-        formatDateTime(status.last_collection_end) : '未知';
-    elements.lastError.textContent = status.last_collection_error || '无';
+        formatDateTime(status.last_collection_end) : i18n.t('statusUnknown');
+    elements.lastError.textContent = status.last_collection_error || i18n.t('statusNone');
 }
 
 // 检查数据是否可下载

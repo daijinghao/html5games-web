@@ -17,7 +17,22 @@ const translations = {
         none: '无',
         idle: '空闲',
         collecting: '采集中',
-        language: '语言'
+        language: '语言',
+        statusIdle: '空闲',
+        statusCollecting: '采集中',
+        statusUpdating: '更新中',
+        statusUnknown: '未知',
+        statusNone: '无',
+        statusError: '错误',
+        statusInitializing: '初始化中...',
+        statusGettingList: '获取游戏列表',
+        statusCollectingData: '采集游戏数据',
+        statusGeneratingPackage: '生成数据包',
+        statusUpdatingDB: '更新数据库',
+        statusUpdateComplete: '更新完成',
+        statusComplete: '采集完成',
+        statusError: '采集出错',
+        statusNotCollecting: '未在采集'
     },
     'en-US': {
         title: 'HTML5Games Data Collection',
@@ -37,7 +52,22 @@ const translations = {
         none: 'None',
         idle: 'Idle',
         collecting: 'Collecting',
-        language: 'Language'
+        language: 'Language',
+        statusIdle: 'Idle',
+        statusCollecting: 'Collecting',
+        statusUpdating: 'Updating',
+        statusUnknown: 'Unknown',
+        statusNone: 'None',
+        statusError: 'Error',
+        statusInitializing: 'Initializing...',
+        statusGettingList: 'Getting Game List',
+        statusCollectingData: 'Collecting Game Data',
+        statusGeneratingPackage: 'Generating Package',
+        statusUpdatingDB: 'Updating Database',
+        statusUpdateComplete: 'Update Complete',
+        statusComplete: 'Collection Complete',
+        statusError: 'Collection Error',
+        statusNotCollecting: 'Not Collecting'
     }
 };
 
@@ -77,8 +107,15 @@ const updatePageTranslations = () => {
     });
 };
 
+// 获取翻译文本
+const t = (key) => {
+    const lang = getCurrentLanguage();
+    return translations[lang][key] || key;
+};
+
 export default {
     getCurrentLanguage,
     setLanguage,
-    updatePageTranslations
+    updatePageTranslations,
+    t
 }; 
