@@ -137,20 +137,22 @@ async function checkDownloadAvailability() {
         }
 
         // 更新下载按钮状态
-        elements.downloadJson.disabled = !data.json_ready;
-        elements.downloadPackage.disabled = !data.package_ready;
-
-        if (!elements.downloadJson.disabled) {
-            elements.downloadJson.classList.remove('loading');
+        if (data.json_ready) {
+            updateDownloadButton(elements.downloadJson, 'normal');
+        } else {
+            updateDownloadButton(elements.downloadJson, 'preparing');
         }
-        if (!elements.downloadPackage.disabled) {
-            elements.downloadPackage.classList.remove('loading');
+
+        if (data.package_ready) {
+            updateDownloadButton(elements.downloadPackage, 'normal');
+        } else {
+            updateDownloadButton(elements.downloadPackage, 'preparing');
         }
     } catch (error) {
         console.error('检查下载状态失败:', error);
         // 出错时禁用下载按钮
-        elements.downloadJson.disabled = true;
-        elements.downloadPackage.disabled = true;
+        updateDownloadButton(elements.downloadJson, 'error');
+        updateDownloadButton(elements.downloadPackage, 'error');
     }
 }
 
@@ -332,10 +334,21 @@ function initializeElements() {
     };
 }
 
+// 初始化按钮状态
+function initializeButtons() {
+    const buttons = [elements.downloadJson, elements.downloadPackage];
+    buttons.forEach(button => {
+        updateDownloadButton(button, 'normal');
+    });
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化 DOM 元素
     initializeElements();
+    
+    // 初始化按钮状态
+    initializeButtons();
     
     // 绑定按钮事件
     elements.downloadJson.addEventListener('click', downloadJson);
