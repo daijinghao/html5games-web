@@ -156,8 +156,25 @@ async function checkDownloadAvailability() {
 
 // 更新下载按钮状态和文本
 function updateDownloadButton(button, state, error = null) {
-    const span = button.querySelector('span');
-    const spinner = button.querySelector('.loading-spinner');
+    if (!button) {
+        console.error('Button element is missing');
+        return;
+    }
+
+    const buttonContent = button.querySelector('.button-content');
+    if (!buttonContent) {
+        console.error('Button content element is missing');
+        return;
+    }
+
+    const span = buttonContent.querySelector('span');
+    const spinner = buttonContent.querySelector('.loading-spinner');
+
+    if (!span || !spinner) {
+        console.error('Required button elements are missing');
+        return;
+    }
+
     const originalText = i18n.t(button.getAttribute('data-i18n'));
     
     switch (state) {
