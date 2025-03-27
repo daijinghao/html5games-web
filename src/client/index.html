@@ -89,20 +89,20 @@
     </div>
 
     <script type="module">
-        import { getCurrentLanguage, setLanguage, updatePageTranslations } from './js/i18n.js';
+        import i18n from './js/i18n.js';
         
         // 初始化语言选择器
         const languageSelect = document.getElementById('languageSelect');
-        languageSelect.value = getCurrentLanguage();
+        languageSelect.value = i18n.getCurrentLanguage();
         
         // 监听语言切换
         languageSelect.addEventListener('change', (e) => {
-            setLanguage(e.target.value);
+            i18n.setLanguage(e.target.value);
             document.documentElement.lang = e.target.value;
         });
         
         // 初始化页面翻译
-        updatePageTranslations();
+        i18n.updatePageTranslations();
     </script>
     <script type="module" src="./js/app.js"></script>
 </body>

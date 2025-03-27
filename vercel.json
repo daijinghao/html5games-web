@@ -4,12 +4,20 @@
     {
       "src": "src/server/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "src/client/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "src/server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/client/$1"
     }
   ],
   "env": {
