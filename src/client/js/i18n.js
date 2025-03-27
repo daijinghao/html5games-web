@@ -78,7 +78,7 @@ const updatePageTranslations = () => {
 };
 
 // 导出需要的函数
-export {
+export default {
     getCurrentLanguage,
     setLanguage,
     updatePageTranslations
