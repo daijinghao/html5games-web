@@ -154,6 +154,39 @@ async function checkDownloadAvailability() {
     }
 }
 
+// 更新下载按钮状态和文本
+function updateDownloadButton(button, state, error = null) {
+    const span = button.querySelector('span');
+    const spinner = button.querySelector('.loading-spinner');
+    
+    switch (state) {
+        case 'normal':
+            button.disabled = false;
+            button.classList.remove('loading');
+            spinner.style.display = 'none';
+            span.textContent = i18n.t(button.getAttribute('data-i18n'));
+            break;
+        case 'loading':
+            button.disabled = true;
+            button.classList.add('loading');
+            spinner.style.display = 'block';
+            span.textContent = i18n.t('downloadInProgress');
+            break;
+        case 'preparing':
+            button.disabled = true;
+            button.classList.add('loading');
+            spinner.style.display = 'block';
+            span.textContent = i18n.t('downloadPreparing');
+            break;
+        case 'error':
+            button.disabled = false;
+            button.classList.remove('loading');
+            spinner.style.display = 'none';
+            span.textContent = `${i18n.t('downloadError')} - ${i18n.t('downloadRetry')}`;
+            break;
+    }
+}
+
 // 开始采集
 async function startCollection() {
     try {
@@ -177,19 +210,26 @@ async function startCollection() {
 
 // 下载 JSON 数据
 async function downloadJson() {
+    const button = elements.downloadJson;
     try {
+        updateDownloadButton(button, 'preparing');
         window.location.href = '/api/download/json';
+        // 短暂延迟后恢复按钮状态
+        setTimeout(() => {
+            updateDownloadButton(button, 'normal');
+        }, 1000);
     } catch (error) {
         console.error('下载 JSON 失败:', error);
+        updateDownloadButton(button, 'error');
         alert('下载 JSON 失败: ' + error.message);
     }
 }
 
 // 下载完整数据包
 async function downloadPackage() {
+    const button = elements.downloadPackage;
     try {
-        elements.downloadPackage.disabled = true;
-        elements.downloadPackage.classList.add('loading');
+        updateDownloadButton(button, 'preparing');
         
         const response = await fetch('/api/download/package');
         const contentType = response.headers.get('content-type');
@@ -207,6 +247,9 @@ async function downloadPackage() {
             throw new Error(data.error || '下载失败');
         }
         
+        // 开始下载
+        updateDownloadButton(button, 'loading');
+        
         // 处理文件下载
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -217,12 +260,15 @@ async function downloadPackage() {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
+        
+        // 下载开始后，等待一段时间再恢复按钮状态
+        setTimeout(() => {
+            updateDownloadButton(button, 'normal');
+        }, 3000);
     } catch (error) {
         console.error('下载数据包失败:', error);
+        updateDownloadButton(button, 'error');
         alert('下载数据包失败: ' + error.message);
-    } finally {
-        // 检查最新状态来决定是否启用按钮
-        await updateStatusPeriodically();
     }
 }
 
@@ -239,13 +285,14 @@ async function updateStatusPeriodically() {
 
 // 禁用/启用下载按钮
 function disableDownloadButtons(disabled) {
-    elements.downloadJson.disabled = disabled;
-    elements.downloadPackage.disabled = disabled;
-    
-    if (disabled) {
-        elements.downloadJson.classList.add('loading');
-        elements.downloadPackage.classList.add('loading');
-    }
+    const buttons = [elements.downloadJson, elements.downloadPackage];
+    buttons.forEach(button => {
+        if (disabled) {
+            updateDownloadButton(button, 'preparing');
+        } else {
+            updateDownloadButton(button, 'normal');
+        }
+    });
 }
 
 // 页面加载完成后初始化

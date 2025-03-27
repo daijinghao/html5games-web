@@ -32,7 +32,13 @@ const translations = {
         statusUpdateComplete: '更新完成',
         statusComplete: '采集完成',
         statusError: '采集出错',
-        statusNotCollecting: '未在采集'
+        statusNotCollecting: '未在采集',
+        downloadStarting: '开始下载...',
+        downloadInProgress: '正在下载...',
+        downloadPreparing: '正在准备文件...',
+        downloadError: '下载失败',
+        downloadRetry: '请重试',
+        downloadWait: '请稍候...'
     },
     'en-US': {
         title: 'HTML5Games Data Collection',
@@ -67,7 +73,13 @@ const translations = {
         statusUpdateComplete: 'Update Complete',
         statusComplete: 'Collection Complete',
         statusError: 'Collection Error',
-        statusNotCollecting: 'Not Collecting'
+        statusNotCollecting: 'Not Collecting',
+        downloadStarting: 'Starting download...',
+        downloadInProgress: 'Downloading...',
+        downloadPreparing: 'Preparing file...',
+        downloadError: 'Download failed',
+        downloadRetry: 'Please retry',
+        downloadWait: 'Please wait...'
     }
 };
 
