@@ -114,7 +114,15 @@ const updatePageTranslations = () => {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (t[key]) {
-            element.textContent = t[key];
+            // 检查是否是按钮且包含 button-content
+            if (element.tagName === 'BUTTON' && element.querySelector('.button-content')) {
+                const span = element.querySelector('.button-content span');
+                if (span) {
+                    span.textContent = t[key];
+                }
+            } else {
+                element.textContent = t[key];
+            }
         }
     });
 };

@@ -343,18 +343,18 @@ function initializeElements() {
 }
 
 // 等待 DOM 元素可用
-async function waitForElement(selector, timeout = 5000) {
+async function waitForElement(element, selector, timeout = 5000) {
     const start = Date.now();
     
     while (Date.now() - start < timeout) {
-        const element = document.querySelector(selector);
-        if (element) {
-            return element;
+        const found = element.querySelector(selector);
+        if (found) {
+            return found;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
     }
     
-    throw new Error(`Element ${selector} not found after ${timeout}ms`);
+    throw new Error(`Element ${selector} not found in ${element.id || 'unknown'} after ${timeout}ms`);
 }
 
 // 初始化按钮状态
@@ -369,10 +369,12 @@ async function initializeButtons() {
             }
             
             // 等待 button-content 元素
-            await waitForElement(`#${button.id} .button-content`);
+            const buttonContent = await waitForElement(button, '.button-content');
+            const span = buttonContent.querySelector('span');
+            const spinner = buttonContent.querySelector('.loading-spinner');
             
-            if (!validateButtonStructure(button)) {
-                throw new Error(`Invalid button structure for ${button.id}`);
+            if (!span || !spinner) {
+                throw new Error(`Missing required child elements in ${button.id}`);
             }
         } catch (error) {
             console.error(`Button initialization error:`, error);
@@ -411,15 +413,19 @@ async function initializeApp() {
             'progressText'
         ];
 
+        console.log('Checking required elements...');
         const missingElements = requiredElements.filter(id => !elements[id]);
         if (missingElements.length > 0) {
             throw new Error(`Missing required elements: ${missingElements.join(', ')}`);
         }
+        console.log('All required elements found');
 
         // 等待 i18n 模块初始化
+        console.log('Waiting for i18n initialization...');
         await new Promise(resolve => setTimeout(resolve, 200));
         
         // 等待按钮初始化
+        console.log('Starting button initialization...');
         const buttonsInitialized = await initializeButtons();
         if (!buttonsInitialized) {
             throw new Error('Button initialization failed');
@@ -440,13 +446,19 @@ async function initializeApp() {
         console.log('Application initialization completed');
     } catch (error) {
         console.error('Application initialization failed:', error);
+        // 添加更多错误信息
+        console.error('Current elements state:', {
+            downloadJson: elements.downloadJson?.outerHTML,
+            downloadPackage: elements.downloadPackage?.outerHTML
+        });
     }
 }
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 等待 DOM 和 i18n 完全准备好
+    console.log('DOM content loaded, waiting for initialization...');
     setTimeout(() => {
         initializeApp();
-    }, 300); // 增加初始延迟时间
+    }, 500); // 增加初始延迟时间以确保 DOM 完全准备好
 }); 
