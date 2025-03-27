@@ -54,58 +54,32 @@ const getCurrentLanguage = () => {
 
 // 设置语言
 const setLanguage = (lang) => {
-    if (!translations[lang]) return;
-    localStorage.setItem('language', lang);
-    updatePageTranslations();
+    if (translations[lang]) {
+        localStorage.setItem('language', lang);
+        updatePageTranslations();
+    }
 };
 
 // 更新页面翻译
 const updatePageTranslations = () => {
-    const currentLang = getCurrentLanguage();
-    const t = translations[currentLang];
-
-    // 更新页面上的所有文本
+    const lang = getCurrentLanguage();
+    const t = translations[lang];
+    
+    // 更新页面标题
     document.title = t.title;
-    document.querySelector('header h1').textContent = t.title;
-    document.querySelector('.status-section h2').textContent = t.systemStatus;
-    document.querySelector('.download-section h2').textContent = t.dataDownload;
-    document.querySelector('.system-section h2').textContent = t.systemInfo;
-
-    // 更新标签文本
+    
+    // 更新所有带有 data-i18n 属性的元素
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (t[key]) {
             element.textContent = t[key];
         }
     });
-
-    // 更新按钮文本
-    document.querySelector('#download-json').childNodes[0].textContent = t.downloadJsonBtn;
-    document.querySelector('#download-package').childNodes[0].textContent = t.downloadPackageBtn;
-
-    // 更新状态文本
-    if (document.querySelector('#collect-status').textContent === '空闲') {
-        document.querySelector('#collect-status').textContent = t.idle;
-    } else if (document.querySelector('#collect-status').textContent === '采集中') {
-        document.querySelector('#collect-status').textContent = t.collecting;
-    }
-
-    // 更新其他默认值
-    if (document.querySelector('#last-update').textContent === '未知') {
-        document.querySelector('#last-update').textContent = t.unknown;
-    }
-    if (document.querySelector('#last-start').textContent === '未知') {
-        document.querySelector('#last-start').textContent = t.unknown;
-    }
-    if (document.querySelector('#last-end').textContent === '未知') {
-        document.querySelector('#last-end').textContent = t.unknown;
-    }
-    if (document.querySelector('#last-error').textContent === '无') {
-        document.querySelector('#last-error').textContent = t.none;
-    }
-    if (document.querySelector('.progress-text').textContent === '准备中...') {
-        document.querySelector('.progress-text').textContent = t.preparing;
-    }
 };
 
-export { getCurrentLanguage, setLanguage, updatePageTranslations }; 
+// 导出需要的函数
+export {
+    getCurrentLanguage,
+    setLanguage,
+    updatePageTranslations
+}; 

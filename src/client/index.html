@@ -11,7 +11,7 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <h1>HTML5Games 数据采集</h1>
+                <h1 data-i18n="title">HTML5Games 数据采集</h1>
                 <div class="language-selector">
                     <select id="languageSelect" aria-label="选择语言">
                         <option value="zh-CN">中文</option>
@@ -26,7 +26,7 @@
         <div class="main-content">
             <!-- 状态信息 -->
             <div class="status-section">
-                <h2>系统状态</h2>
+                <h2 data-i18n="systemStatus">系统状态</h2>
                 <div class="status-grid">
                     <div class="status-item">
                         <label data-i18n="totalGames">游戏总数</label>
@@ -34,25 +34,25 @@
                     </div>
                     <div class="status-item">
                         <label data-i18n="lastUpdate">最后更新</label>
-                        <span id="last-update">未知</span>
+                        <span id="last-update" data-i18n="unknown">未知</span>
                     </div>
                     <div class="status-item">
                         <label data-i18n="collectStatus">采集状态</label>
-                        <span id="collect-status">空闲</span>
+                        <span id="collect-status" data-i18n="idle">空闲</span>
                     </div>
                 </div>
             </div>
 
             <!-- 数据下载 -->
             <div class="download-section">
-                <h2>数据下载</h2>
+                <h2 data-i18n="dataDownload">数据下载</h2>
                 <div class="download-buttons">
                     <button id="download-json" class="btn secondary">
-                        下载 JSON 数据
+                        <span data-i18n="downloadJsonBtn">下载 JSON 数据</span>
                         <div class="loading-spinner"></div>
                     </button>
                     <button id="download-package" class="btn secondary">
-                        下载完整数据包
+                        <span data-i18n="downloadPackageBtn">下载完整数据包</span>
                         <div class="loading-spinner"></div>
                     </button>
                 </div>
@@ -60,19 +60,19 @@
 
             <!-- 系统信息 -->
             <div class="system-section">
-                <h2>系统信息</h2>
+                <h2 data-i18n="systemInfo">系统信息</h2>
                 <div class="info-grid">
                     <div class="info-item">
                         <label data-i18n="lastCollectStart">上次采集开始</label>
-                        <span id="last-start">未知</span>
+                        <span id="last-start" data-i18n="unknown">未知</span>
                     </div>
                     <div class="info-item">
                         <label data-i18n="lastCollectEnd">上次采集结束</label>
-                        <span id="last-end">未知</span>
+                        <span id="last-end" data-i18n="unknown">未知</span>
                     </div>
                     <div class="info-item">
                         <label data-i18n="lastError">上次错误信息</label>
-                        <span id="last-error">无</span>
+                        <span id="last-error" data-i18n="none">无</span>
                     </div>
                 </div>
             </div>
@@ -82,13 +82,13 @@
                 <div class="progress-container">
                     <div class="progress-bar"></div>
                 </div>
-                <div class="progress-text">准备中...</div>
+                <div class="progress-text" data-i18n="preparing">准备中...</div>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { getCurrentLanguage, setLanguage, updatePageTranslations } from '/js/i18n.js';
+        import { getCurrentLanguage, setLanguage, updatePageTranslations } from './js/i18n.js';
         
         // 初始化语言选择器
         const languageSelect = document.getElementById('languageSelect');
