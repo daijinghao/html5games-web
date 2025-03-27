@@ -160,35 +160,35 @@ header h1 {
 
 /* 按钮样式 */
 .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    background: var(--section-bg);
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 500;
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
     transition: all 0.2s;
 }
 
-.btn:hover {
-    background: var(--secondary-color);
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn.loading {
+    cursor: wait;
 }
 
 .btn.secondary {
-    background: var(--primary-color);
+    background-color: #1a73e8;
     color: white;
-    border: none;
 }
 
-.btn.secondary:hover {
-    background: #1d4ed8;
-    color: white;
+.btn.secondary:hover:not(:disabled) {
+    background-color: #1557b0;
 }
 
 /* 状态卡片 */
@@ -366,8 +366,8 @@ section h2 {
 
 .download-buttons {
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
 }
 
 .download-count {
@@ -429,19 +429,17 @@ h2 {
 
 /* 下载按钮 loading 效果 */
 .loading-spinner {
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid var(--secondary-color);
-    border-top-color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    display: none;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .btn[disabled] {
@@ -542,4 +540,11 @@ h2 {
     .language-selector {
         margin-bottom: 0.5rem;
     }
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 } 

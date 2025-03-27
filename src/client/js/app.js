@@ -158,31 +158,32 @@ async function checkDownloadAvailability() {
 function updateDownloadButton(button, state, error = null) {
     const span = button.querySelector('span');
     const spinner = button.querySelector('.loading-spinner');
+    const originalText = i18n.t(button.getAttribute('data-i18n'));
     
     switch (state) {
         case 'normal':
             button.disabled = false;
             button.classList.remove('loading');
             spinner.style.display = 'none';
-            span.textContent = i18n.t(button.getAttribute('data-i18n'));
+            span.textContent = originalText;
             break;
         case 'loading':
             button.disabled = true;
             button.classList.add('loading');
             spinner.style.display = 'block';
-            span.textContent = i18n.t('downloadInProgress');
+            span.textContent = `${originalText} - ${i18n.t('downloadInProgress')}`;
             break;
         case 'preparing':
             button.disabled = true;
             button.classList.add('loading');
             spinner.style.display = 'block';
-            span.textContent = i18n.t('downloadPreparing');
+            span.textContent = `${originalText} - ${i18n.t('downloadPreparing')}`;
             break;
         case 'error':
             button.disabled = false;
             button.classList.remove('loading');
             spinner.style.display = 'none';
-            span.textContent = `${i18n.t('downloadError')} - ${i18n.t('downloadRetry')}`;
+            span.textContent = `${originalText} - ${i18n.t('downloadError')}`;
             break;
     }
 }
@@ -229,6 +230,8 @@ async function downloadJson() {
 async function downloadPackage() {
     const button = elements.downloadPackage;
     try {
+        // 禁用所有下载按钮
+        disableDownloadButtons(true);
         updateDownloadButton(button, 'preparing');
         
         const response = await fetch('/api/download/package');
@@ -237,8 +240,6 @@ async function downloadPackage() {
         if (contentType && contentType.includes('application/json')) {
             const data = await response.json();
             if (response.status === 503 && data.is_collecting) {
-                // 数据正在采集中，禁用所有按钮
-                disableDownloadButtons(true);
                 alert('数据采集中，请稍后再试');
                 // 立即更新一次状态
                 await updateStatusPeriodically();
@@ -263,11 +264,13 @@ async function downloadPackage() {
         
         // 下载开始后，等待一段时间再恢复按钮状态
         setTimeout(() => {
+            disableDownloadButtons(false);
             updateDownloadButton(button, 'normal');
         }, 3000);
     } catch (error) {
         console.error('下载数据包失败:', error);
         updateDownloadButton(button, 'error');
+        disableDownloadButtons(false);
         alert('下载数据包失败: ' + error.message);
     }
 }
