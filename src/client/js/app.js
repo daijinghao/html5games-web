@@ -1,16 +1,16 @@
 // DOM 元素
-const elements = {
-    totalGames: document.getElementById('total-games'),
-    lastUpdate: document.getElementById('last-update'),
-    collectStatus: document.getElementById('collect-status'),
-    downloadJson: document.getElementById('download-json'),
-    downloadPackage: document.getElementById('download-package'),
-    lastStart: document.getElementById('last-start'),
-    lastEnd: document.getElementById('last-end'),
-    lastError: document.getElementById('last-error'),
-    progressContainer: document.querySelector('.progress-section'),
-    progressBar: document.querySelector('.progress-bar'),
-    progressText: document.querySelector('.progress-text')
+let elements = {
+    totalGames: null,
+    lastUpdate: null,
+    collectStatus: null,
+    downloadJson: null,
+    downloadPackage: null,
+    lastStart: null,
+    lastEnd: null,
+    lastError: null,
+    progressContainer: null,
+    progressBar: null,
+    progressText: null
 };
 
 // 导入 i18n 模块
@@ -315,12 +315,31 @@ function disableDownloadButtons(disabled) {
     });
 }
 
+// 初始化 DOM 元素
+function initializeElements() {
+    elements = {
+        totalGames: document.getElementById('total-games'),
+        lastUpdate: document.getElementById('last-update'),
+        collectStatus: document.getElementById('collect-status'),
+        downloadJson: document.getElementById('download-json'),
+        downloadPackage: document.getElementById('download-package'),
+        lastStart: document.getElementById('last-start'),
+        lastEnd: document.getElementById('last-end'),
+        lastError: document.getElementById('last-error'),
+        progressContainer: document.querySelector('.progress-section'),
+        progressBar: document.querySelector('.progress-bar'),
+        progressText: document.querySelector('.progress-text')
+    };
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 绑定按钮事件
+    // 初始化 DOM 元素
+    initializeElements();
     
-    document.getElementById('download-json').addEventListener('click', downloadJson);
-    document.getElementById('download-package').addEventListener('click', downloadPackage);
+    // 绑定按钮事件
+    elements.downloadJson.addEventListener('click', downloadJson);
+    elements.downloadPackage.addEventListener('click', downloadPackage);
 
     // 立即更新一次状态
     updateStatusPeriodically();
